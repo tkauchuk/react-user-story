@@ -8,6 +8,7 @@ import {
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ArrowDropUpOutlinedIcon from '@mui/icons-material/ArrowDropUpOutlined';
+import PropTypes from 'prop-types';
 import styles from './ToDoList.module.css';
 
 const ToDoList = ({
@@ -71,6 +72,14 @@ const ToDoList = ({
       </div>
     )
   );
+};
+
+ToDoList.propTypes = {
+  todos: PropTypes.arrayOf(PropTypes.object),
+  onDeleteToDo: PropTypes.func,
+  setTaskCompleted: PropTypes.func,
+  moveTaskUp: PropTypes.func,
+  moveTaskDown: PropTypes.func,
 };
 
 export default ToDoList;
