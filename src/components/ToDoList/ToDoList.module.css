@@ -1,0 +1,37 @@
+.wrapper {
+  width: 100%;
+}
+
+@media screen and (min-width: 480px) {
+  .wrapper {
+    width: 480px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .wrapper {
+    width: 768px;
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.deleteButton {
+  align-self: flex-end;
+  padding-bottom: 5px;
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+
+  transition: background-color linear 250ms;
+}
+
+.deleteButton:hover,
+.deleteButton:focus {
+  background-color: #ececec;
+}
