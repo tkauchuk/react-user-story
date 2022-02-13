@@ -17,6 +17,7 @@ const ToDoList = ({
   setTaskCompleted,
   moveTaskUp,
   moveTaskDown,
+  onNestedTask,
 }) => {
   return (
     todos &&
@@ -29,6 +30,7 @@ const ToDoList = ({
                 alignItems="flex-start"
                 disablePadding
                 sx={{
+                  position: 'relative',
                   backgroundColor: completed ? '#ececec' : 'transparent',
                   borderBottom: '1px solid #ececec',
                   alignItems: 'center',
@@ -64,6 +66,13 @@ const ToDoList = ({
                   onClick={() => onDeleteToDo(id)}
                 >
                   <DeleteOutlineOutlinedIcon />
+                </button>
+                <button
+                  onClick={() => {
+                    onNestedTask(id);
+                  }}
+                >
+                  Add
                 </button>
               </ListItem>
             );

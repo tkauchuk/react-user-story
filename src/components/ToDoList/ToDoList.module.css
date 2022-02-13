@@ -26,6 +26,7 @@
   background: transparent;
   outline: none;
   border: none;
+  border-radius: 50%;
   cursor: pointer;
 
   transition: background-color linear 250ms;
@@ -33,5 +34,22 @@
 
 .deleteButton:hover,
 .deleteButton:focus {
+  background-color: #ececec;
+}
+
+.addButton {
+  align-self: flex-end;
+  padding-bottom: 5px;
+  background: transparent;
+  outline: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+
+  transition: background-color linear 250ms;
+}
+
+.addButton:hover,
+.addButton:focus {
   background-color: #ececec;
 }
