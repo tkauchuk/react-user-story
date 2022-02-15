@@ -117,7 +117,28 @@ function App() {
     );
   };
 
-  const addNestedTask = (todoId, todo = new Date().getTime()) => {
+  const doesHaveAncestors = (todoID, todos, key, newNestedTask) => {
+    const copy = [...todos];
+    let renewed = null;
+
+    const parentTask = tasks.find(({ id }) => id === todoID);
+    renewed = copy.map(task => {
+      if (task.id === parentTask.id) {
+        return {
+          ...task,
+          childNodes: [...task['childNodes'], newNestedTask.id],
+        };
+      }
+      return task;
+    });
+    if (parentTask[key]) {
+      return doesHaveAncestors(parentTask[key], renewed, key, newNestedTask);
+    }
+
+    return renewed;
+  };
+
+  const addNestedTask = (todoId, todo = new Date().getSeconds()) => {
     const newNestedTask = {
       id: uuidv4(),
       todo,
@@ -125,8 +146,14 @@ function App() {
       childNodes: [],
     };
 
-    const parentTask = tasks.find(({ id }) => id === todoId);
-    console.log(parentTask);
+    const renewed = doesHaveAncestors(
+      todoId,
+      tasks,
+      'parentNode',
+      newNestedTask,
+    );
+    // const parentTask = tasks.find(({ id }) => id === todoId);
+    // console.log(parentTask);
 
     // if (parentTask.parentNode) {
     //   setTasks(
@@ -141,20 +168,27 @@ function App() {
     //     }),
     //   );
     // }
-    setTasks(
-      tasks.map(task => {
-        if (task.id === todoId || task.id === parentTask.parentNode) {
-          return {
-            ...task,
-            childNodes: [...task['childNodes'], newNestedTask.id],
-          };
-        }
-        return task;
-      }),
-    );
-    return parentTask.parentNode
-      ? addNestedTask(parentTask.parentNode)
-      : setTasks(prevTasks => [...prevTasks, newNestedTask]);
+
+    // setTasks(
+    //   tasks.map(task => {
+    //     if (task.id === todoId) {
+    //       return {
+    //         ...task,
+    //         childNodes: [...task['childNodes'], newNestedTask.id],
+    //       };
+    //     }
+    //     return task;
+    //   }),
+    // );
+
+    setTasks([...renewed, newNestedTask]);
+
+    // if (parentTask.parentNode) {
+    //   addNestedTask(parentTask.parentNode);
+    // }
+    // return parentTask.parentNode
+    //   ? addNestedTask(parentTask.parentNode)
+    //   : setTasks(prevTasks => [...prevTasks, newNestedTask]);
   };
 
   const completed = tasks.reduce((total, task) => {
