@@ -57,18 +57,20 @@ const Sublist = ({
                   <ListItemText primary={todo} />
                   <Checkbox
                     checked={completed}
-                    onChange={() => setTaskCompleted(id)}
+                    onChange={setTaskCompleted.bind(todos[index], id)}
                     size="small"
                   />
-                  <button type="button" onClick={() => onDeleteToDo(id)}>
+                  <button
+                    type="button"
+                    onClick={onDeleteToDo.bind(todos[index], id)}
+                  >
                     <DeleteOutlineOutlinedIcon />
                   </button>
                   <button
-                    onClick={id => {
+                    onClick={
                       // onNestedTask(id);
-                      console.log(id, '---------------------');
-                      setParentTaskID(id);
-                    }}
+                      setParentTaskID.bind(todos[index], id)
+                    }
                   >
                     Add
                   </button>
