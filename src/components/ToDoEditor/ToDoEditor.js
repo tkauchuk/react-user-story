@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import styles from './ToDoEditor.module.css';
 
-const ToDoEditor = ({ onFormSubmit }) => {
+const ToDoEditor = ({ onFormSubmit, parentTaskID, onNestedTask }) => {
   const [task, setTask] = useState('');
 
   const handleSubmit = event => {
@@ -13,18 +13,40 @@ const ToDoEditor = ({ onFormSubmit }) => {
     return setTask('');
   };
 
+  const handleNestedSubmit = event => {
+    event.preventDefault();
+    onNestedTask(parentTaskID, task);
+    return setTask('');
+  };
+
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form
+      className={styles.form}
+      style={
+        parentTaskID !== null
+          ? { transform: 'scale(1.1)', transition: 'transform 250ms linear' }
+          : {}
+      }
+      onSubmit={parentTaskID ? handleNestedSubmit : handleSubmit}
+    >
       <TextField
         id="outlined-multiline-flexible"
         label="Set a task..."
         multiline
         maxRows={4}
         value={task}
+        autoFocus
         onChange={event => setTask(event.target.value)}
-        sx={{
-          marginRight: '10px',
-        }}
+        sx={
+          parentTaskID !== null
+            ? {
+                boxShadow: '4px 4px 8px 0px rgba(34, 60, 80, 0.2)',
+                marginRight: '10px',
+              }
+            : {
+                marginRight: '10px',
+              }
+        }
       />
       <Button
         type="submit"

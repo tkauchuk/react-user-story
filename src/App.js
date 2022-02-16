@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import Typography from '@mui/material/Typography';
+// import Typography from '@mui/material/Typography';
 
 import ToDoList from 'components/ToDoList';
 import ToDoEditor from 'components/ToDoEditor';
@@ -10,6 +10,10 @@ function App() {
   const [tasks, setTasks] = useState(
     JSON.parse(window.localStorage.getItem('tasks')) ?? [],
   );
+
+  const [parentTaskID, setParentTaskID] = useState(null);
+
+  console.log(parentTaskID, 'first');
 
   useEffect(() => {
     window.localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -23,6 +27,7 @@ function App() {
       parentNode: null,
       childNodes: [],
     };
+    // newTask.unit = newTask.id;
     setTasks(prevTasks => [newTask, ...prevTasks]);
   };
 
@@ -138,12 +143,13 @@ function App() {
     return renewed;
   };
 
-  const addNestedTask = (todoId, todo = new Date().getSeconds()) => {
+  const addNestedTask = (todoId, todo) => {
     const newNestedTask = {
       id: uuidv4(),
       todo,
       parentNode: todoId,
       childNodes: [],
+      unit: todoId,
     };
 
     const renewed = doesHaveAncestors(
@@ -182,6 +188,7 @@ function App() {
     // );
 
     setTasks([...renewed, newNestedTask]);
+    setParentTaskID(null);
 
     // if (parentTask.parentNode) {
     //   addNestedTask(parentTask.parentNode);
@@ -194,30 +201,68 @@ function App() {
   const completed = tasks.reduce((total, task) => {
     return task.completed ? total + 1 : total;
   }, 0);
-  const total = tasks.length - completed;
-  const sorted = tasks.sort((a, b) => a.completed - b.completed);
+  // const total = tasks.length - completed;
+  // const sorted = tasks.sort((a, b) => a.completed - b.completed);
+
+  console.log(tasks);
+  console.log(parentTaskID, 'second');
+
+  const sorted = tasks.sort((a, b) => {
+    console.log(a, 'aaa');
+    console.log(b, 'bbb');
+
+    console.log(b.childNodes.includes(a.id));
+  });
+
+  (() => {
+    const copy = [...tasks];
+
+    // let length = copy.length;
+    // for (let i = 0; i < length; i += 1) {
+    //   for (let j = 0; j < length - i - 1; j += 1) {
+    //     if (copy[j].unit !== copy[j + 1].unit) {
+    //       console.log(copy[j].childNodes.includes(copy[j + 1].id));
+    //       let temp = copy[j];
+    //       copy[j] = copy[j + 1];
+    //       copy[j + 1] = temp;
+    //     }
+    //   }
+    // }
+    // copy.sort();
+    console.log(sorted, 'sorted-copy');
+    return sorted;
+  })();
+
+  const ancestors = tasks.filter(element => element.childNodes.length === 0);
+  console.log(tasks, '---tasks---');
 
   return (
     <Fragment>
-      <Typography
+      {/* <Typography
         variant="h2"
         sx={{ paddingTop: '40px', color: '#2196f3', textAlign: 'center' }}
       >
         {total > 0 ? total : 'No'} {total === 1 ? 'Task' : 'Tasks'} Left for
         Today ...
-      </Typography>
+      </Typography> */}
       <div className="container">
         <ToDoList
-          todos={sorted}
+          todos={tasks}
           onDeleteToDo={deleteTask}
           moveTaskUp={moveTaskUp}
           moveTaskDown={moveTaskDown}
           setTaskCompleted={setTaskCompleted}
           onNestedTask={addNestedTask}
+          setParentTaskID={setParentTaskID}
+          ancestors={ancestors}
         />
       </div>
       <div className="footer">
-        <ToDoEditor onFormSubmit={addTask} />
+        <ToDoEditor
+          onFormSubmit={addTask}
+          parentTaskID={parentTaskID}
+          onNestedTask={addNestedTask}
+        />
       </div>
     </Fragment>
   );
